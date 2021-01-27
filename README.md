@@ -57,6 +57,7 @@ make
 ```
 ![IMAGE ALT TEXT](data/2.png)
 Then you will creat some files under RPI-Pico-Cam/build/Arducam path 
+Bin|Description
 ---|---
 [arducam_demo.elf](arducam_demo) | which is used by the debugger.
 [arducam_demo.uf2](arducam_demo) | which can be dragged onto the RP2040 USB Mass Storage Device.
