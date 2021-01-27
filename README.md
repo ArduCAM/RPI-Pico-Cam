@@ -57,6 +57,7 @@ make
 ```
 ![IMAGE ALT TEXT](data/2.png)
 Then you will creat some files under RPI-Pico-Cam/build/Arducam path 
+---|---
 [arducam_demo.elf](arducam_demo) | which is used by the debugger.
 [arducam_demo.uf2](arducam_demo) | which can be dragged onto the RP2040 USB Mass Storage Device.
 ![IMAGE ALT TEXT](data/3.png)
@@ -75,6 +76,7 @@ Doing this allows you to drag a file onto the board to program the flash. Go ahe
 your Raspberry Pi using a micro-USB cable, making sure that you hold down the BOOTSEL button to force it into
 USB Mass Storage Mode.
 ![IMAGE ALT TEXT](data/4.png)
+
 If you are logged in via ssh for example, you may have to mount the mass storage device manually:
 ```bash
 $ dmesg | tail
