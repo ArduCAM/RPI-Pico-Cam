@@ -68,7 +68,7 @@ Bin|Description
 
 App|Description
 ---|---
-[Arducam](arducam_demo) | This is a video streaming demo.
+[arducam_demo](arducam_demo) | This is a video streaming demo.
 
 - Hardware connection 
 
