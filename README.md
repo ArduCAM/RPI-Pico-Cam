@@ -1,4 +1,4 @@
-# PICO SDK Examples
+# PICO Arducam Examples
 
 ## Getting started
 
