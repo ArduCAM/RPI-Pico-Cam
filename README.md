@@ -1,5 +1,20 @@
 # PICO Arducam Examples
 
+Table of contents
+=================
+
+   * [Table of contents](#table-of-contents)
+   * [Getting Started](#Getting-started)
+   * [Quick Pico Setup](#Quick-Pico-Setup)
+   * [Arducam Demo](#Get-Arducam)
+      * [Download and Build](#Get-Arducam)
+      * [Test Arducam demo](#Test-Arducam-demo)
+   * [Person Detection](#Person-Detection)
+      * [Download and Build](#Person-Detection)
+      * [Test Person Detection](#Test-Person-Detection)
+        * [View output](#View-output)
+      * [Person Detection Diagram](#Person-Detection-Diagram)
+
 ## Getting started
 
 See [Getting Started with the Raspberry Pi Pico](https://rptl.io/pico-get-started) and the README in the [pico-sdk](https://github.com/raspberrypi/pico-sdk) for information
