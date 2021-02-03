@@ -4,7 +4,7 @@ Table of contents
 =================
 
    * [Table of contents](#table-of-contents)
-   * [Getting Started](#Getting-started)
+   * [Getting Started](#Getting-Started)
    * [Quick Pico Setup](#Quick-Pico-Setup)
    * [Arducam Demo](#Get-Arducam)
       * [Download and Build](#Get-Arducam)
@@ -15,7 +15,7 @@ Table of contents
         * [View output](#View-output)
       * [Person Detection Diagram](#Person-Detection-Diagram)
 
-## Getting started
+# Getting started
 
 See [Getting Started with the Raspberry Pi Pico](https://rptl.io/pico-get-started) and the README in the [pico-sdk](https://github.com/raspberrypi/pico-sdk) for information
 on getting up and running.
@@ -127,9 +127,10 @@ make
 Then you will creat some files under RPI-Pico-Cam/tflmicro/build/examples/person_detection path 
 Bin|Description
 ---|---
-[person_detection_int8.uf2](tflmicro/examples/person_detection/main_functions.cpp) | This is the main program of person_detection, which can be dragged onto the RP2040 USB Mass Storage Device.
-[person_detection_benchmark.uf2](tflmicro/examples/person_detection/tensorflow/lite/micro/benchmarks/person_detection_benchmark.cpp) | This is the benchmark program of person_detection, you can use it to test the performance of person_detection on pico.
-[image_provider_benchmark.uf2](tflmicro/examples/person_detection/image_provider_benchmark.cpp) | This is the benchmark program of image_provider, you can use it to test the performance of image data acquisition.
+[person_detection_int8.uf2](tflmicro/bin/person_detection_int8.uf2) | This is the main program of person_detection, which can be dragged onto the RP2040 USB Mass Storage Device.
+[person_detection_benchmark.uf2](tflmicro/bin/person_detection_benchmark.uf2) | This is the benchmark program of person_detection, you can use it to test the performance of person_detection on pico.
+[image_provider_benchmark.uf2](tflmicro/bin/image_provider_benchmark.uf2) | This is the benchmark program of image_provider, you can use it to test the performance of image data acquisition.
+**Tips: If you don't want to compile, you can use the above pre-built uf2 file, you only need to wire the hardware and download uf2 to the device.**
 
 ![IMAGE ALT TEXT](data/tflmicro_output.png)
 
