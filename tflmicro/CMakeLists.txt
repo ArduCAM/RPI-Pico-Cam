@@ -1,0 +1,440 @@
+
+cmake_minimum_required(VERSION 3.12)
+
+# Pull in PICO SDK (must be before project)
+include(pico_sdk_import.cmake)
+
+project(pico-tflmicro C CXX ASM)
+set(CMAKE_C_STANDARD 11)
+set(CMAKE_CXX_STANDARD 11)
+
+pico_sdk_init()
+
+add_library(pico-tflmicro "")
+
+target_include_directories(pico-tflmicro
+  PUBLIC
+  ${CMAKE_CURRENT_LIST_DIR}/src/
+  ${CMAKE_CURRENT_LIST_DIR}/src/third_party/cmsis/CMSIS/DSP/Include
+  ${CMAKE_CURRENT_LIST_DIR}/src/third_party/ruy
+  ${CMAKE_CURRENT_LIST_DIR}/src/third_party/gemmlowp
+  ${CMAKE_CURRENT_LIST_DIR}/src/third_party/kissfft
+  ${CMAKE_CURRENT_LIST_DIR}/src/third_party/flatbuffers
+  ${CMAKE_CURRENT_LIST_DIR}/src/third_party/cmsis/CMSIS/Core/Include
+  ${CMAKE_CURRENT_LIST_DIR}/src/third_party/cmsis
+  ${CMAKE_CURRENT_LIST_DIR}/src/third_party/flatbuffers/include
+  ${CMAKE_CURRENT_LIST_DIR}/src/third_party/cmsis/CMSIS/NN/Include
+)
+
+target_compile_definitions(
+  pico-tflmicro
+  PUBLIC
+  COMPILE_DEFINITIONS TF_LITE_DISABLE_X86_NEON=1
+  COMPILE_DEFINITIONS TF_LITE_STATIC_MEMORY=1
+  COMPILE_DEFINITIONS CMSIS_NN=1
+)
+
+set_target_properties(
+  pico-tflmicro
+  PROPERTIES
+  COMPILE_FLAGS -fno-rtti
+  COMPILE_FLAGS -fno-exceptions
+  COMPILE_FLAGS -fno-threadsafe-statics
+  COMPILE_FLAGS -nostdlib
+)
+
+target_link_libraries(
+  pico-tflmicro
+  pico_stdlib
+)
+
+target_sources(pico-tflmicro
+  PUBLIC
+  ${CMAKE_CURRENT_LIST_DIR}/src/tensorflow/lite/c/common.c
+  ${CMAKE_CURRENT_LIST_DIR}/src/tensorflow/lite/core/api/error_reporter.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/src/tensorflow/lite/core/api/flatbuffer_conversions.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/src/tensorflow/lite/core/api/op_resolver.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/src/tensorflow/lite/core/api/tensor_utils.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/src/tensorflow/lite/kernels/internal/quantization_util.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/src/tensorflow/lite/kernels/kernel_util.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/src/tensorflow/lite/micro/all_ops_resolver.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/src/tensorflow/lite/micro/kernels/activations.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/src/tensorflow/lite/micro/kernels/arg_min_max.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/src/tensorflow/lite/micro/kernels/ceil.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/src/tensorflow/lite/micro/kernels/circular_buffer.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/src/tensorflow/lite/micro/kernels/cmsis-nn/add.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/src/tensorflow/lite/micro/kernels/cmsis-nn/conv.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/src/tensorflow/lite/micro/kernels/cmsis-nn/depthwise_conv.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/src/tensorflow/lite/micro/kernels/cmsis-nn/fully_connected.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/src/tensorflow/lite/micro/kernels/cmsis-nn/mul.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/src/tensorflow/lite/micro/kernels/cmsis-nn/pooling.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/src/tensorflow/lite/micro/kernels/cmsis-nn/softmax.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/src/tensorflow/lite/micro/kernels/cmsis-nn/svdf.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/src/tensorflow/lite/micro/kernels/comparisons.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/src/tensorflow/lite/micro/kernels/concatenation.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/src/tensorflow/lite/micro/kernels/dequantize.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/src/tensorflow/lite/micro/kernels/detection_postprocess.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/src/tensorflow/lite/micro/kernels/elementwise.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/src/tensorflow/lite/micro/kernels/ethosu.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/src/tensorflow/lite/micro/kernels/flexbuffers_generated_data.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/src/tensorflow/lite/micro/kernels/floor.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/src/tensorflow/lite/micro/kernels/hard_swish.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/src/tensorflow/lite/micro/kernels/kernel_runner.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/src/tensorflow/lite/micro/kernels/kernel_util.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/src/tensorflow/lite/micro/kernels/l2norm.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/src/tensorflow/lite/micro/kernels/logical.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/src/tensorflow/lite/micro/kernels/logistic.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/src/tensorflow/lite/micro/kernels/maximum_minimum.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/src/tensorflow/lite/micro/kernels/neg.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/src/tensorflow/lite/micro/kernels/pack.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/src/tensorflow/lite/micro/kernels/pad.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/src/tensorflow/lite/micro/kernels/prelu.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/src/tensorflow/lite/micro/kernels/quantize.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/src/tensorflow/lite/micro/kernels/reduce.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/src/tensorflow/lite/micro/kernels/reshape.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/src/tensorflow/lite/micro/kernels/resize_nearest_neighbor.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/src/tensorflow/lite/micro/kernels/round.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/src/tensorflow/lite/micro/kernels/shape.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/src/tensorflow/lite/micro/kernels/split.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/src/tensorflow/lite/micro/kernels/split_v.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/src/tensorflow/lite/micro/kernels/strided_slice.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/src/tensorflow/lite/micro/kernels/sub.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/src/tensorflow/lite/micro/kernels/tanh.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/src/tensorflow/lite/micro/kernels/unpack.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/src/tensorflow/lite/micro/memory_helpers.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/src/tensorflow/lite/micro/memory_planner/greedy_memory_planner.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/src/tensorflow/lite/micro/memory_planner/linear_memory_planner.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/src/tensorflow/lite/micro/micro_allocator.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/src/tensorflow/lite/micro/micro_error_reporter.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/src/tensorflow/lite/micro/micro_interpreter.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/src/tensorflow/lite/micro/micro_profiler.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/src/tensorflow/lite/micro/micro_string.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/src/tensorflow/lite/micro/micro_utils.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/src/tensorflow/lite/micro/recording_micro_allocator.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/src/tensorflow/lite/micro/recording_simple_memory_allocator.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/src/tensorflow/lite/micro/rp2/debug_log.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/src/tensorflow/lite/micro/rp2/micro_time.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/src/tensorflow/lite/micro/simple_memory_allocator.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/src/tensorflow/lite/micro/test_helpers.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/src/tensorflow/lite/micro/testing/test_conv_model.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/src/tensorflow/lite/schema/schema_utils.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/src/tensorflow/LICENSE
+  ${CMAKE_CURRENT_LIST_DIR}/src/tensorflow/core/public/version.h
+  ${CMAKE_CURRENT_LIST_DIR}/src/tensorflow/lite/c/builtin_op_data.h
+  ${CMAKE_CURRENT_LIST_DIR}/src/tensorflow/lite/c/common.h
+  ${CMAKE_CURRENT_LIST_DIR}/src/tensorflow/lite/core/api/error_reporter.h
+  ${CMAKE_CURRENT_LIST_DIR}/src/tensorflow/lite/core/api/flatbuffer_conversions.h
+  ${CMAKE_CURRENT_LIST_DIR}/src/tensorflow/lite/core/api/op_resolver.h
+  ${CMAKE_CURRENT_LIST_DIR}/src/tensorflow/lite/core/api/profiler.h
+  ${CMAKE_CURRENT_LIST_DIR}/src/tensorflow/lite/core/api/tensor_utils.h
+  ${CMAKE_CURRENT_LIST_DIR}/src/tensorflow/lite/kernels/internal/common.h
+  ${CMAKE_CURRENT_LIST_DIR}/src/tensorflow/lite/kernels/internal/compatibility.h
+  ${CMAKE_CURRENT_LIST_DIR}/src/tensorflow/lite/kernels/internal/cppmath.h
+  ${CMAKE_CURRENT_LIST_DIR}/src/tensorflow/lite/kernels/internal/max.h
+  ${CMAKE_CURRENT_LIST_DIR}/src/tensorflow/lite/kernels/internal/min.h
+  ${CMAKE_CURRENT_LIST_DIR}/src/tensorflow/lite/kernels/internal/optimized/neon_check.h
+  ${CMAKE_CURRENT_LIST_DIR}/src/tensorflow/lite/kernels/internal/portable_tensor.h
+  ${CMAKE_CURRENT_LIST_DIR}/src/tensorflow/lite/kernels/internal/quantization_util.h
+  ${CMAKE_CURRENT_LIST_DIR}/src/tensorflow/lite/kernels/internal/reference/add.h
+  ${CMAKE_CURRENT_LIST_DIR}/src/tensorflow/lite/kernels/internal/reference/arg_min_max.h
+  ${CMAKE_CURRENT_LIST_DIR}/src/tensorflow/lite/kernels/internal/reference/binary_function.h
+  ${CMAKE_CURRENT_LIST_DIR}/src/tensorflow/lite/kernels/internal/reference/ceil.h
+  ${CMAKE_CURRENT_LIST_DIR}/src/tensorflow/lite/kernels/internal/reference/comparisons.h
+  ${CMAKE_CURRENT_LIST_DIR}/src/tensorflow/lite/kernels/internal/reference/concatenation.h
+  ${CMAKE_CURRENT_LIST_DIR}/src/tensorflow/lite/kernels/internal/reference/conv.h
+  ${CMAKE_CURRENT_LIST_DIR}/src/tensorflow/lite/kernels/internal/reference/depthwiseconv_float.h
+  ${CMAKE_CURRENT_LIST_DIR}/src/tensorflow/lite/kernels/internal/reference/depthwiseconv_uint8.h
+  ${CMAKE_CURRENT_LIST_DIR}/src/tensorflow/lite/kernels/internal/reference/dequantize.h
+  ${CMAKE_CURRENT_LIST_DIR}/src/tensorflow/lite/kernels/internal/reference/floor.h
+  ${CMAKE_CURRENT_LIST_DIR}/src/tensorflow/lite/kernels/internal/reference/fully_connected.h
+  ${CMAKE_CURRENT_LIST_DIR}/src/tensorflow/lite/kernels/internal/reference/hard_swish.h
+  ${CMAKE_CURRENT_LIST_DIR}/src/tensorflow/lite/kernels/internal/reference/integer_ops/add.h
+  ${CMAKE_CURRENT_LIST_DIR}/src/tensorflow/lite/kernels/internal/reference/integer_ops/conv.h
+  ${CMAKE_CURRENT_LIST_DIR}/src/tensorflow/lite/kernels/internal/reference/integer_ops/depthwise_conv.h
+  ${CMAKE_CURRENT_LIST_DIR}/src/tensorflow/lite/kernels/internal/reference/integer_ops/fully_connected.h
+  ${CMAKE_CURRENT_LIST_DIR}/src/tensorflow/lite/kernels/internal/reference/integer_ops/l2normalization.h
+  ${CMAKE_CURRENT_LIST_DIR}/src/tensorflow/lite/kernels/internal/reference/integer_ops/logistic.h
+  ${CMAKE_CURRENT_LIST_DIR}/src/tensorflow/lite/kernels/internal/reference/integer_ops/mean.h
+  ${CMAKE_CURRENT_LIST_DIR}/src/tensorflow/lite/kernels/internal/reference/integer_ops/mul.h
+  ${CMAKE_CURRENT_LIST_DIR}/src/tensorflow/lite/kernels/internal/reference/integer_ops/pooling.h
+  ${CMAKE_CURRENT_LIST_DIR}/src/tensorflow/lite/kernels/internal/reference/integer_ops/tanh.h
+  ${CMAKE_CURRENT_LIST_DIR}/src/tensorflow/lite/kernels/internal/reference/l2normalization.h
+  ${CMAKE_CURRENT_LIST_DIR}/src/tensorflow/lite/kernels/internal/reference/logistic.h
+  ${CMAKE_CURRENT_LIST_DIR}/src/tensorflow/lite/kernels/internal/reference/maximum_minimum.h
+  ${CMAKE_CURRENT_LIST_DIR}/src/tensorflow/lite/kernels/internal/reference/mul.h
+  ${CMAKE_CURRENT_LIST_DIR}/src/tensorflow/lite/kernels/internal/reference/neg.h
+  ${CMAKE_CURRENT_LIST_DIR}/src/tensorflow/lite/kernels/internal/reference/pad.h
+  ${CMAKE_CURRENT_LIST_DIR}/src/tensorflow/lite/kernels/internal/reference/pooling.h
+  ${CMAKE_CURRENT_LIST_DIR}/src/tensorflow/lite/kernels/internal/reference/prelu.h
+  ${CMAKE_CURRENT_LIST_DIR}/src/tensorflow/lite/kernels/internal/reference/process_broadcast_shapes.h
+  ${CMAKE_CURRENT_LIST_DIR}/src/tensorflow/lite/kernels/internal/reference/quantize.h
+  ${CMAKE_CURRENT_LIST_DIR}/src/tensorflow/lite/kernels/internal/reference/reduce.h
+  ${CMAKE_CURRENT_LIST_DIR}/src/tensorflow/lite/kernels/internal/reference/requantize.h
+  ${CMAKE_CURRENT_LIST_DIR}/src/tensorflow/lite/kernels/internal/reference/resize_nearest_neighbor.h
+  ${CMAKE_CURRENT_LIST_DIR}/src/tensorflow/lite/kernels/internal/reference/round.h
+  ${CMAKE_CURRENT_LIST_DIR}/src/tensorflow/lite/kernels/internal/reference/softmax.h
+  ${CMAKE_CURRENT_LIST_DIR}/src/tensorflow/lite/kernels/internal/reference/strided_slice.h
+  ${CMAKE_CURRENT_LIST_DIR}/src/tensorflow/lite/kernels/internal/reference/sub.h
+  ${CMAKE_CURRENT_LIST_DIR}/src/tensorflow/lite/kernels/internal/reference/tanh.h
+  ${CMAKE_CURRENT_LIST_DIR}/src/tensorflow/lite/kernels/internal/strided_slice_logic.h
+  ${CMAKE_CURRENT_LIST_DIR}/src/tensorflow/lite/kernels/internal/tensor_ctypes.h
+  ${CMAKE_CURRENT_LIST_DIR}/src/tensorflow/lite/kernels/internal/types.h
+  ${CMAKE_CURRENT_LIST_DIR}/src/tensorflow/lite/kernels/kernel_util.h
+  ${CMAKE_CURRENT_LIST_DIR}/src/tensorflow/lite/kernels/op_macros.h
+  ${CMAKE_CURRENT_LIST_DIR}/src/tensorflow/lite/kernels/padding.h
+  ${CMAKE_CURRENT_LIST_DIR}/src/tensorflow/lite/micro/all_ops_resolver.h
+  ${CMAKE_CURRENT_LIST_DIR}/src/tensorflow/lite/micro/benchmarks/keyword_scrambled_model_data.h
+  ${CMAKE_CURRENT_LIST_DIR}/src/tensorflow/lite/micro/benchmarks/micro_benchmark.h
+  ${CMAKE_CURRENT_LIST_DIR}/src/tensorflow/lite/micro/compatibility.h
+  ${CMAKE_CURRENT_LIST_DIR}/src/tensorflow/lite/micro/debug_log.h
+  ${CMAKE_CURRENT_LIST_DIR}/src/tensorflow/lite/micro/kernels/activation_utils.h
+  ${CMAKE_CURRENT_LIST_DIR}/src/tensorflow/lite/micro/kernels/ethosu.h
+  ${CMAKE_CURRENT_LIST_DIR}/src/tensorflow/lite/micro/kernels/flexbuffers_generated_data.h
+  ${CMAKE_CURRENT_LIST_DIR}/src/tensorflow/lite/micro/kernels/fully_connected.h
+  ${CMAKE_CURRENT_LIST_DIR}/src/tensorflow/lite/micro/kernels/kernel_runner.h
+  ${CMAKE_CURRENT_LIST_DIR}/src/tensorflow/lite/micro/kernels/kernel_util.h
+  ${CMAKE_CURRENT_LIST_DIR}/src/tensorflow/lite/micro/kernels/micro_ops.h
+  ${CMAKE_CURRENT_LIST_DIR}/src/tensorflow/lite/micro/kernels/micro_utils.h
+  ${CMAKE_CURRENT_LIST_DIR}/src/tensorflow/lite/micro/memory_helpers.h
+  ${CMAKE_CURRENT_LIST_DIR}/src/tensorflow/lite/micro/memory_planner/greedy_memory_planner.h
+  ${CMAKE_CURRENT_LIST_DIR}/src/tensorflow/lite/micro/memory_planner/linear_memory_planner.h
+  ${CMAKE_CURRENT_LIST_DIR}/src/tensorflow/lite/micro/memory_planner/memory_planner.h
+  ${CMAKE_CURRENT_LIST_DIR}/src/tensorflow/lite/micro/micro_allocator.h
+  ${CMAKE_CURRENT_LIST_DIR}/src/tensorflow/lite/micro/micro_error_reporter.h
+  ${CMAKE_CURRENT_LIST_DIR}/src/tensorflow/lite/micro/micro_interpreter.h
+  ${CMAKE_CURRENT_LIST_DIR}/src/tensorflow/lite/micro/micro_mutable_op_resolver.h
+  ${CMAKE_CURRENT_LIST_DIR}/src/tensorflow/lite/micro/micro_op_resolver.h
+  ${CMAKE_CURRENT_LIST_DIR}/src/tensorflow/lite/micro/micro_profiler.h
+  ${CMAKE_CURRENT_LIST_DIR}/src/tensorflow/lite/micro/micro_string.h
+  ${CMAKE_CURRENT_LIST_DIR}/src/tensorflow/lite/micro/micro_time.h
+  ${CMAKE_CURRENT_LIST_DIR}/src/tensorflow/lite/micro/micro_utils.h
+  ${CMAKE_CURRENT_LIST_DIR}/src/tensorflow/lite/micro/recording_micro_allocator.h
+  ${CMAKE_CURRENT_LIST_DIR}/src/tensorflow/lite/micro/recording_micro_interpreter.h
+  ${CMAKE_CURRENT_LIST_DIR}/src/tensorflow/lite/micro/recording_simple_memory_allocator.h
+  ${CMAKE_CURRENT_LIST_DIR}/src/tensorflow/lite/micro/simple_memory_allocator.h
+  ${CMAKE_CURRENT_LIST_DIR}/src/tensorflow/lite/micro/test_helpers.h
+  ${CMAKE_CURRENT_LIST_DIR}/src/tensorflow/lite/portable_type_to_tflitetype.h
+  ${CMAKE_CURRENT_LIST_DIR}/src/tensorflow/lite/schema/schema_generated.h
+  ${CMAKE_CURRENT_LIST_DIR}/src/tensorflow/lite/schema/schema_utils.h
+  ${CMAKE_CURRENT_LIST_DIR}/src/tensorflow/lite/version.h
+  ${CMAKE_CURRENT_LIST_DIR}/src/third_party/cmsis/CMSIS/NN/Source/ActivationFunctions/arm_nn_activations_q15.c
+  ${CMAKE_CURRENT_LIST_DIR}/src/third_party/cmsis/CMSIS/NN/Source/ActivationFunctions/arm_nn_activations_q7.c
+  ${CMAKE_CURRENT_LIST_DIR}/src/third_party/cmsis/CMSIS/NN/Source/ActivationFunctions/arm_relu6_s8.c
+  ${CMAKE_CURRENT_LIST_DIR}/src/third_party/cmsis/CMSIS/NN/Source/ActivationFunctions/arm_relu_q15.c
+  ${CMAKE_CURRENT_LIST_DIR}/src/third_party/cmsis/CMSIS/NN/Source/ActivationFunctions/arm_relu_q7.c
+  ${CMAKE_CURRENT_LIST_DIR}/src/third_party/cmsis/CMSIS/NN/Source/BasicMathFunctions/arm_elementwise_add_s8.c
+  ${CMAKE_CURRENT_LIST_DIR}/src/third_party/cmsis/CMSIS/NN/Source/BasicMathFunctions/arm_elementwise_mul_s8.c
+  ${CMAKE_CURRENT_LIST_DIR}/src/third_party/cmsis/CMSIS/NN/Source/ConcatenationFunctions/arm_concatenation_s8_w.c
+  ${CMAKE_CURRENT_LIST_DIR}/src/third_party/cmsis/CMSIS/NN/Source/ConcatenationFunctions/arm_concatenation_s8_x.c
+  ${CMAKE_CURRENT_LIST_DIR}/src/third_party/cmsis/CMSIS/NN/Source/ConcatenationFunctions/arm_concatenation_s8_y.c
+  ${CMAKE_CURRENT_LIST_DIR}/src/third_party/cmsis/CMSIS/NN/Source/ConcatenationFunctions/arm_concatenation_s8_z.c
+  ${CMAKE_CURRENT_LIST_DIR}/src/third_party/cmsis/CMSIS/NN/Source/ConvolutionFunctions/arm_convolve_1_x_n_s8.c
+  ${CMAKE_CURRENT_LIST_DIR}/src/third_party/cmsis/CMSIS/NN/Source/ConvolutionFunctions/arm_convolve_1x1_HWC_q7_fast_nonsquare.c
+  ${CMAKE_CURRENT_LIST_DIR}/src/third_party/cmsis/CMSIS/NN/Source/ConvolutionFunctions/arm_convolve_1x1_s8_fast.c
+  ${CMAKE_CURRENT_LIST_DIR}/src/third_party/cmsis/CMSIS/NN/Source/ConvolutionFunctions/arm_convolve_HWC_q15_basic.c
+  ${CMAKE_CURRENT_LIST_DIR}/src/third_party/cmsis/CMSIS/NN/Source/ConvolutionFunctions/arm_convolve_HWC_q15_fast.c
+  ${CMAKE_CURRENT_LIST_DIR}/src/third_party/cmsis/CMSIS/NN/Source/ConvolutionFunctions/arm_convolve_HWC_q15_fast_nonsquare.c
+  ${CMAKE_CURRENT_LIST_DIR}/src/third_party/cmsis/CMSIS/NN/Source/ConvolutionFunctions/arm_convolve_HWC_q7_RGB.c
+  ${CMAKE_CURRENT_LIST_DIR}/src/third_party/cmsis/CMSIS/NN/Source/ConvolutionFunctions/arm_convolve_HWC_q7_basic.c
+  ${CMAKE_CURRENT_LIST_DIR}/src/third_party/cmsis/CMSIS/NN/Source/ConvolutionFunctions/arm_convolve_HWC_q7_basic_nonsquare.c
+  ${CMAKE_CURRENT_LIST_DIR}/src/third_party/cmsis/CMSIS/NN/Source/ConvolutionFunctions/arm_convolve_HWC_q7_fast.c
+  ${CMAKE_CURRENT_LIST_DIR}/src/third_party/cmsis/CMSIS/NN/Source/ConvolutionFunctions/arm_convolve_HWC_q7_fast_nonsquare.c
+  ${CMAKE_CURRENT_LIST_DIR}/src/third_party/cmsis/CMSIS/NN/Source/ConvolutionFunctions/arm_convolve_s8.c
+  ${CMAKE_CURRENT_LIST_DIR}/src/third_party/cmsis/CMSIS/NN/Source/ConvolutionFunctions/arm_convolve_wrapper_s8.c
+  ${CMAKE_CURRENT_LIST_DIR}/src/third_party/cmsis/CMSIS/NN/Source/ConvolutionFunctions/arm_depthwise_conv_3x3_s8.c
+  ${CMAKE_CURRENT_LIST_DIR}/src/third_party/cmsis/CMSIS/NN/Source/ConvolutionFunctions/arm_depthwise_conv_s8.c
+  ${CMAKE_CURRENT_LIST_DIR}/src/third_party/cmsis/CMSIS/NN/Source/ConvolutionFunctions/arm_depthwise_conv_s8_opt.c
+  ${CMAKE_CURRENT_LIST_DIR}/src/third_party/cmsis/CMSIS/NN/Source/ConvolutionFunctions/arm_depthwise_conv_u8_basic_ver1.c
+  ${CMAKE_CURRENT_LIST_DIR}/src/third_party/cmsis/CMSIS/NN/Source/ConvolutionFunctions/arm_depthwise_conv_wrapper_s8.c
+  ${CMAKE_CURRENT_LIST_DIR}/src/third_party/cmsis/CMSIS/NN/Source/ConvolutionFunctions/arm_depthwise_separable_conv_HWC_q7.c
+  ${CMAKE_CURRENT_LIST_DIR}/src/third_party/cmsis/CMSIS/NN/Source/ConvolutionFunctions/arm_depthwise_separable_conv_HWC_q7_nonsquare.c
+  ${CMAKE_CURRENT_LIST_DIR}/src/third_party/cmsis/CMSIS/NN/Source/ConvolutionFunctions/arm_nn_depthwise_conv_s8_core.c
+  ${CMAKE_CURRENT_LIST_DIR}/src/third_party/cmsis/CMSIS/NN/Source/ConvolutionFunctions/arm_nn_mat_mult_kernel_q7_q15.c
+  ${CMAKE_CURRENT_LIST_DIR}/src/third_party/cmsis/CMSIS/NN/Source/ConvolutionFunctions/arm_nn_mat_mult_kernel_q7_q15_reordered.c
+  ${CMAKE_CURRENT_LIST_DIR}/src/third_party/cmsis/CMSIS/NN/Source/ConvolutionFunctions/arm_nn_mat_mult_kernel_s8_s16.c
+  ${CMAKE_CURRENT_LIST_DIR}/src/third_party/cmsis/CMSIS/NN/Source/ConvolutionFunctions/arm_nn_mat_mult_kernel_s8_s16_reordered.c
+  ${CMAKE_CURRENT_LIST_DIR}/src/third_party/cmsis/CMSIS/NN/Source/ConvolutionFunctions/arm_nn_mat_mult_s8.c
+  ${CMAKE_CURRENT_LIST_DIR}/src/third_party/cmsis/CMSIS/NN/Source/FullyConnectedFunctions/arm_fully_connected_mat_q7_vec_q15.c
+  ${CMAKE_CURRENT_LIST_DIR}/src/third_party/cmsis/CMSIS/NN/Source/FullyConnectedFunctions/arm_fully_connected_mat_q7_vec_q15_opt.c
+  ${CMAKE_CURRENT_LIST_DIR}/src/third_party/cmsis/CMSIS/NN/Source/FullyConnectedFunctions/arm_fully_connected_q15.c
+  ${CMAKE_CURRENT_LIST_DIR}/src/third_party/cmsis/CMSIS/NN/Source/FullyConnectedFunctions/arm_fully_connected_q15_opt.c
+  ${CMAKE_CURRENT_LIST_DIR}/src/third_party/cmsis/CMSIS/NN/Source/FullyConnectedFunctions/arm_fully_connected_q7.c
+  ${CMAKE_CURRENT_LIST_DIR}/src/third_party/cmsis/CMSIS/NN/Source/FullyConnectedFunctions/arm_fully_connected_q7_opt.c
+  ${CMAKE_CURRENT_LIST_DIR}/src/third_party/cmsis/CMSIS/NN/Source/FullyConnectedFunctions/arm_fully_connected_s8.c
+  ${CMAKE_CURRENT_LIST_DIR}/src/third_party/cmsis/CMSIS/NN/Source/NNSupportFunctions/arm_nn_accumulate_q7_to_q15.c
+  ${CMAKE_CURRENT_LIST_DIR}/src/third_party/cmsis/CMSIS/NN/Source/NNSupportFunctions/arm_nn_add_q7.c
+  ${CMAKE_CURRENT_LIST_DIR}/src/third_party/cmsis/CMSIS/NN/Source/NNSupportFunctions/arm_nn_depthwise_conv_nt_t_padded_s8.c
+  ${CMAKE_CURRENT_LIST_DIR}/src/third_party/cmsis/CMSIS/NN/Source/NNSupportFunctions/arm_nn_depthwise_conv_nt_t_s8.c
+  ${CMAKE_CURRENT_LIST_DIR}/src/third_party/cmsis/CMSIS/NN/Source/NNSupportFunctions/arm_nn_mat_mul_core_1x_s8.c
+  ${CMAKE_CURRENT_LIST_DIR}/src/third_party/cmsis/CMSIS/NN/Source/NNSupportFunctions/arm_nn_mat_mul_core_4x_s8.c
+  ${CMAKE_CURRENT_LIST_DIR}/src/third_party/cmsis/CMSIS/NN/Source/NNSupportFunctions/arm_nn_mat_mult_nt_t_s8.c
+  ${CMAKE_CURRENT_LIST_DIR}/src/third_party/cmsis/CMSIS/NN/Source/NNSupportFunctions/arm_nn_mult_q15.c
+  ${CMAKE_CURRENT_LIST_DIR}/src/third_party/cmsis/CMSIS/NN/Source/NNSupportFunctions/arm_nn_mult_q7.c
+  ${CMAKE_CURRENT_LIST_DIR}/src/third_party/cmsis/CMSIS/NN/Source/NNSupportFunctions/arm_nn_vec_mat_mult_t_s8.c
+  ${CMAKE_CURRENT_LIST_DIR}/src/third_party/cmsis/CMSIS/NN/Source/NNSupportFunctions/arm_nntables.c
+  ${CMAKE_CURRENT_LIST_DIR}/src/third_party/cmsis/CMSIS/NN/Source/NNSupportFunctions/arm_q7_to_q15_no_shift.c
+  ${CMAKE_CURRENT_LIST_DIR}/src/third_party/cmsis/CMSIS/NN/Source/NNSupportFunctions/arm_q7_to_q15_reordered_no_shift.c
+  ${CMAKE_CURRENT_LIST_DIR}/src/third_party/cmsis/CMSIS/NN/Source/NNSupportFunctions/arm_q7_to_q15_reordered_with_offset.c
+  ${CMAKE_CURRENT_LIST_DIR}/src/third_party/cmsis/CMSIS/NN/Source/NNSupportFunctions/arm_q7_to_q15_with_offset.c
+  ${CMAKE_CURRENT_LIST_DIR}/src/third_party/cmsis/CMSIS/NN/Source/PoolingFunctions/arm_avgpool_s8.c
+  ${CMAKE_CURRENT_LIST_DIR}/src/third_party/cmsis/CMSIS/NN/Source/PoolingFunctions/arm_max_pool_s8.c
+  ${CMAKE_CURRENT_LIST_DIR}/src/third_party/cmsis/CMSIS/NN/Source/PoolingFunctions/arm_pool_q7_HWC.c
+  ${CMAKE_CURRENT_LIST_DIR}/src/third_party/cmsis/CMSIS/NN/Source/ReshapeFunctions/arm_reshape_s8.c
+  ${CMAKE_CURRENT_LIST_DIR}/src/third_party/cmsis/CMSIS/NN/Source/SVDFunctions/arm_svdf_s8.c
+  ${CMAKE_CURRENT_LIST_DIR}/src/third_party/cmsis/CMSIS/NN/Source/SoftmaxFunctions/arm_softmax_q15.c
+  ${CMAKE_CURRENT_LIST_DIR}/src/third_party/cmsis/CMSIS/NN/Source/SoftmaxFunctions/arm_softmax_q7.c
+  ${CMAKE_CURRENT_LIST_DIR}/src/third_party/cmsis/CMSIS/NN/Source/SoftmaxFunctions/arm_softmax_s8.c
+  ${CMAKE_CURRENT_LIST_DIR}/src/third_party/cmsis/CMSIS/NN/Source/SoftmaxFunctions/arm_softmax_u8.c
+  ${CMAKE_CURRENT_LIST_DIR}/src/third_party/cmsis/CMSIS/NN/Source/SoftmaxFunctions/arm_softmax_with_batch_q7.c
+  ${CMAKE_CURRENT_LIST_DIR}/src/third_party/cmsis/CMSIS/Core/Include/cmsis_armclang.h
+  ${CMAKE_CURRENT_LIST_DIR}/src/third_party/cmsis/CMSIS/Core/Include/cmsis_compiler.h
+  ${CMAKE_CURRENT_LIST_DIR}/src/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h
+  ${CMAKE_CURRENT_LIST_DIR}/src/third_party/cmsis/CMSIS/DSP/Include/arm_common_tables.h
+  ${CMAKE_CURRENT_LIST_DIR}/src/third_party/cmsis/CMSIS/DSP/Include/arm_helium_utils.h
+  ${CMAKE_CURRENT_LIST_DIR}/src/third_party/cmsis/CMSIS/DSP/Include/arm_math.h
+  ${CMAKE_CURRENT_LIST_DIR}/src/third_party/cmsis/CMSIS/DSP/Include/arm_math_memory.h
+  ${CMAKE_CURRENT_LIST_DIR}/src/third_party/cmsis/CMSIS/DSP/Include/arm_math_types.h
+  ${CMAKE_CURRENT_LIST_DIR}/src/third_party/cmsis/CMSIS/DSP/Include/dsp/basic_math_functions.h
+  ${CMAKE_CURRENT_LIST_DIR}/src/third_party/cmsis/CMSIS/DSP/Include/dsp/bayes_functions.h
+  ${CMAKE_CURRENT_LIST_DIR}/src/third_party/cmsis/CMSIS/DSP/Include/dsp/complex_math_functions.h
+  ${CMAKE_CURRENT_LIST_DIR}/src/third_party/cmsis/CMSIS/DSP/Include/dsp/controller_functions.h
+  ${CMAKE_CURRENT_LIST_DIR}/src/third_party/cmsis/CMSIS/DSP/Include/dsp/distance_functions.h
+  ${CMAKE_CURRENT_LIST_DIR}/src/third_party/cmsis/CMSIS/DSP/Include/dsp/fast_math_functions.h
+  ${CMAKE_CURRENT_LIST_DIR}/src/third_party/cmsis/CMSIS/DSP/Include/dsp/filtering_functions.h
+  ${CMAKE_CURRENT_LIST_DIR}/src/third_party/cmsis/CMSIS/DSP/Include/dsp/interpolation_functions.h
+  ${CMAKE_CURRENT_LIST_DIR}/src/third_party/cmsis/CMSIS/DSP/Include/dsp/matrix_functions.h
+  ${CMAKE_CURRENT_LIST_DIR}/src/third_party/cmsis/CMSIS/DSP/Include/dsp/none.h
+  ${CMAKE_CURRENT_LIST_DIR}/src/third_party/cmsis/CMSIS/DSP/Include/dsp/statistics_functions.h
+  ${CMAKE_CURRENT_LIST_DIR}/src/third_party/cmsis/CMSIS/DSP/Include/dsp/support_functions.h
+  ${CMAKE_CURRENT_LIST_DIR}/src/third_party/cmsis/CMSIS/DSP/Include/dsp/svm_defines.h
+  ${CMAKE_CURRENT_LIST_DIR}/src/third_party/cmsis/CMSIS/DSP/Include/dsp/svm_functions.h
+  ${CMAKE_CURRENT_LIST_DIR}/src/third_party/cmsis/CMSIS/DSP/Include/dsp/transform_functions.h
+  ${CMAKE_CURRENT_LIST_DIR}/src/third_party/cmsis/CMSIS/DSP/Include/dsp/utils.h
+  ${CMAKE_CURRENT_LIST_DIR}/src/third_party/cmsis/CMSIS/NN/Include/arm_nn_tables.h
+  ${CMAKE_CURRENT_LIST_DIR}/src/third_party/cmsis/CMSIS/NN/Include/arm_nn_types.h
+  ${CMAKE_CURRENT_LIST_DIR}/src/third_party/cmsis/CMSIS/NN/Include/arm_nnfunctions.h
+  ${CMAKE_CURRENT_LIST_DIR}/src/third_party/cmsis/CMSIS/NN/Include/arm_nnsupportfunctions.h
+  ${CMAKE_CURRENT_LIST_DIR}/src/third_party/cmsis/LICENSE.txt
+  ${CMAKE_CURRENT_LIST_DIR}/src/third_party/flatbuffers/LICENSE.txt
+  ${CMAKE_CURRENT_LIST_DIR}/src/third_party/flatbuffers/include/flatbuffers/base.h
+  ${CMAKE_CURRENT_LIST_DIR}/src/third_party/flatbuffers/include/flatbuffers/flatbuffers.h
+  ${CMAKE_CURRENT_LIST_DIR}/src/third_party/flatbuffers/include/flatbuffers/flexbuffers.h
+  ${CMAKE_CURRENT_LIST_DIR}/src/third_party/flatbuffers/include/flatbuffers/stl_emulation.h
+  ${CMAKE_CURRENT_LIST_DIR}/src/third_party/flatbuffers/include/flatbuffers/util.h
+  ${CMAKE_CURRENT_LIST_DIR}/src/third_party/gemmlowp/LICENSE
+  ${CMAKE_CURRENT_LIST_DIR}/src/third_party/gemmlowp/fixedpoint/fixedpoint.h
+  ${CMAKE_CURRENT_LIST_DIR}/src/third_party/gemmlowp/fixedpoint/fixedpoint_neon.h
+  ${CMAKE_CURRENT_LIST_DIR}/src/third_party/gemmlowp/fixedpoint/fixedpoint_sse.h
+  ${CMAKE_CURRENT_LIST_DIR}/src/third_party/gemmlowp/internal/detect_platform.h
+  ${CMAKE_CURRENT_LIST_DIR}/src/third_party/kissfft/COPYING
+  ${CMAKE_CURRENT_LIST_DIR}/src/third_party/kissfft/_kiss_fft_guts.h
+  ${CMAKE_CURRENT_LIST_DIR}/src/third_party/kissfft/kiss_fft.h
+  ${CMAKE_CURRENT_LIST_DIR}/src/third_party/kissfft/tools/kiss_fftr.h
+  ${CMAKE_CURRENT_LIST_DIR}/src/third_party/ruy/LICENSE
+  ${CMAKE_CURRENT_LIST_DIR}/src/third_party/ruy/ruy/profiler/instrumentation.h
+)
+
+add_library(pico-tflmicro_test "")
+
+target_include_directories(pico-tflmicro_test
+  PUBLIC
+  ${CMAKE_CURRENT_LIST_DIR}/src/
+  ${CMAKE_CURRENT_LIST_DIR}/src/third_party/cmsis/CMSIS/DSP/Include
+  ${CMAKE_CURRENT_LIST_DIR}/src/third_party/ruy
+  ${CMAKE_CURRENT_LIST_DIR}/src/third_party/gemmlowp
+  ${CMAKE_CURRENT_LIST_DIR}/src/third_party/kissfft
+  ${CMAKE_CURRENT_LIST_DIR}/src/third_party/flatbuffers
+  ${CMAKE_CURRENT_LIST_DIR}/src/third_party/cmsis/CMSIS/Core/Include
+  ${CMAKE_CURRENT_LIST_DIR}/src/third_party/cmsis
+  ${CMAKE_CURRENT_LIST_DIR}/src/third_party/flatbuffers/include
+  ${CMAKE_CURRENT_LIST_DIR}/src/third_party/cmsis/CMSIS/NN/Include
+)
+
+target_compile_definitions(
+  pico-tflmicro_test
+  PUBLIC
+  COMPILE_DEFINITIONS TF_LITE_DISABLE_X86_NEON=1
+  COMPILE_DEFINITIONS TF_LITE_STATIC_MEMORY=1
+  COMPILE_DEFINITIONS CMSIS_NN=1
+)
+
+set_target_properties(
+  pico-tflmicro_test
+  PROPERTIES
+  COMPILE_FLAGS -fno-rtti
+  COMPILE_FLAGS -fno-exceptions
+  COMPILE_FLAGS -fno-threadsafe-statics
+  COMPILE_FLAGS -nostdlib
+)
+
+target_link_libraries(
+  pico-tflmicro_test
+  pico_stdlib
+)
+
+target_sources(pico-tflmicro_test
+  PUBLIC
+  ${CMAKE_CURRENT_LIST_DIR}/src/tensorflow/lite/micro/benchmarks/keyword_scrambled_model_data.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/src/tensorflow/lite/micro/testing/test_conv_model.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/src/tensorflow/lite/micro/testing/util_test.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/src/tensorflow/lite/micro/testing/micro_test.h
+  ${CMAKE_CURRENT_LIST_DIR}/src/tensorflow/lite/micro/testing/test_conv_model.h
+)
+
+add_subdirectory("Arducam/src")
+add_subdirectory("examples/person_detection")
+# add_subdirectory("tests/greedy_memory_planner_test")
+# add_subdirectory("tests/kernel_activations_test")
+# add_subdirectory("tests/kernel_add_test")
+# add_subdirectory("tests/kernel_arg_min_max_test")
+# add_subdirectory("tests/kernel_ceil_test")
+# add_subdirectory("tests/kernel_circular_buffer_test")
+# add_subdirectory("tests/kernel_comparisons_test")
+# add_subdirectory("tests/kernel_concatenation_test")
+# add_subdirectory("tests/kernel_conv_test")
+# add_subdirectory("tests/kernel_depthwise_conv_test")
+# add_subdirectory("tests/kernel_dequantize_test")
+# add_subdirectory("tests/kernel_detection_postprocess_test")
+# add_subdirectory("tests/kernel_elementwise_test")
+# add_subdirectory("tests/kernel_floor_test")
+# add_subdirectory("tests/kernel_fully_connected_test")
+# add_subdirectory("tests/kernel_hard_swish_test")
+# add_subdirectory("tests/kernel_l2norm_test")
+# add_subdirectory("tests/kernel_logical_test")
+# add_subdirectory("tests/kernel_logistic_test")
+# add_subdirectory("tests/kernel_maximum_minimum_test")
+# add_subdirectory("tests/kernel_mul_test")
+# add_subdirectory("tests/kernel_neg_test")
+# add_subdirectory("tests/kernel_pack_test")
+# add_subdirectory("tests/kernel_pad_test")
+# add_subdirectory("tests/kernel_pooling_test")
+# add_subdirectory("tests/kernel_prelu_test")
+# add_subdirectory("tests/kernel_quantization_util_test")
+# add_subdirectory("tests/kernel_quantize_test")
+# add_subdirectory("tests/kernel_reduce_test")
+# add_subdirectory("tests/kernel_reshape_test")
+# add_subdirectory("tests/kernel_resize_nearest_neighbor_test")
+# add_subdirectory("tests/kernel_round_test")
+# add_subdirectory("tests/kernel_shape_test")
+# add_subdirectory("tests/kernel_softmax_test")
+# add_subdirectory("tests/kernel_split_test")
+# add_subdirectory("tests/kernel_split_v_test")
+# add_subdirectory("tests/kernel_strided_slice_test")
+# add_subdirectory("tests/kernel_sub_test")
+# add_subdirectory("tests/kernel_svdf_test")
+# add_subdirectory("tests/kernel_tanh_test")
+# add_subdirectory("tests/kernel_unpack_test")
+# add_subdirectory("tests/linear_memory_planner_test")
+# add_subdirectory("tests/memory_arena_threshold_test")
+# add_subdirectory("tests/memory_helpers_test")
+# add_subdirectory("tests/micro_allocator_test")
+# add_subdirectory("tests/micro_error_reporter_test")
+# add_subdirectory("tests/micro_interpreter_test")
+# add_subdirectory("tests/micro_mutable_op_resolver_test")
+# add_subdirectory("tests/micro_string_test")
+# add_subdirectory("tests/micro_time_test")
+# add_subdirectory("tests/micro_utils_test")
+# add_subdirectory("tests/recording_micro_allocator_test")
+# add_subdirectory("tests/recording_simple_memory_allocator_test")
+# add_subdirectory("tests/simple_memory_allocator_test")
+# add_subdirectory("tests/testing_helpers_test")
