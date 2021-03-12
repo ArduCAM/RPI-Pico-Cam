@@ -13,6 +13,6 @@ set(PICO_EXAMPLES_PATH ${PROJECT_SOURCE_DIR})
 pico_sdk_init()
 
 include(example_auto_set_url.cmake)
-# Add arducam example
+# Add arducam_s example
 add_subdirectory(Arducam)
 

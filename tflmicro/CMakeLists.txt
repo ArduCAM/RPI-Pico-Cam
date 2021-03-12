@@ -383,6 +383,7 @@ target_sources(pico-tflmicro_test
 
 add_subdirectory("Arducam/src")
 add_subdirectory("examples/person_detection")
+add_subdirectory("examples/person_detection_screen")
 # add_subdirectory("tests/greedy_memory_planner_test")
 # add_subdirectory("tests/kernel_activations_test")
 # add_subdirectory("tests/kernel_add_test")
