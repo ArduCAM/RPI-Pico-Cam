@@ -222,7 +222,7 @@ App|Description
 ---|---
 [person_detection_screen_int8](tflmicro/examples/person_detection_screen/main_functions.cpp) | This is a person detection screen demo.
 
-- Hardware connection
+- Hardware requirements
 
 ![IMAGE ALT TEXT](data/Pico4ML.png)
 
@@ -264,7 +264,3 @@ minicom -b 115200 -o -D /dev/ttyACM0
 The person detection screen example also outputs the image data and person detection screen results to the UART, and you can see them directly on the screen.
 ![no-person](data/no_person_screen.jpg){}
 ![person](data/person_screen.jpg)
-
-
-### person detection screen Diagram
-![person detection screen Diagram](data/diagram.png)
