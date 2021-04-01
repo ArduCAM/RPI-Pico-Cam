@@ -106,7 +106,6 @@ sudo cp arducam_demo.uf2 /mnt/pico
 sudo sync
 ```
 
-
 ## Person Detection
 - Download RPI-Pico-Cam
 ```bash 
