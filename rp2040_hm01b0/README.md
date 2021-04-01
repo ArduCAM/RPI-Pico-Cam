@@ -5,7 +5,7 @@
 ```
 ## Compile 
 ```bash
-    cd https://github.com/ArduCAM/RPI-Pico-Cam/tree/master/rp2040_hm01b0
+    cd RPI-Pico-Cam/tree/master/rp2040_hm01b0
     mkdir build
     cd build
     cmake ..
