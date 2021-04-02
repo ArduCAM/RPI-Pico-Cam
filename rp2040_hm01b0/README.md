@@ -15,3 +15,6 @@
     make 
 ```
 ## Copy the arducam_firmware.uf2 to pico
+
+## test
+![IMAGE ALT TEXT](../data/hm01b0_run_demo.png)
