@@ -1,4 +1,6 @@
 # Arducam hm01b0 demo 
+## Hardware Connection
+![IMAGE ALT TEXT](../data/hm01b0.png)
 ## Clone Arducam library 
 ```bash
     git clone https://github.com/ArduCAM/RPI-Pico-Cam.git
