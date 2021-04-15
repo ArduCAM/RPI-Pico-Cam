@@ -34,7 +34,7 @@ void setup()
   //myPort = new Serial(this, Serial.list()[0], 9600);          // if you have only ONE serial port active
 
   // if you know the serial port name
-  myPort = new Serial(this, "COM11", 115200);                    // Windows
+  myPort = new Serial(this, "COM11", 921600);                    // Windows
   //  myPort = new Serial(this, "/dev/ttyUSB0", 921600);            // Linux
   // myPort = new Serial(this, "/dev/cu.usbmodem14401", 9600);     // Mac
 
