@@ -249,7 +249,7 @@ uint8_t ov2640Probe() {
     uint8_t id_H, id_L;
     rdSensorReg8_8(0x0A, &id_H);
     rdSensorReg8_8(0x0B, &id_L);
-    if (id_H == 0x26 && (id_L == 0x40 || id_L == 0x42)) {
+    if (id_H == 0x26 && (id_L == 0x40||id_L == 0x41 || id_L == 0x42)) {
         printf("ov2640 detected\r\n");
         return 0;
     } else {
