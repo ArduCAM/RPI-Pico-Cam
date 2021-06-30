@@ -36,7 +36,7 @@ void setup()
   // if you know the serial port name
   //myPort = new Serial(this, "COM4", 921600);                    // Windows
   myPort = new Serial(this, "/dev/ttyUSB0", 921600);            // Linux
-  // myPort = new Serial(this, "/dev/cu.usbmodem14401", 9600);     // Mac
+  // myPort = new Serial(this, "/dev/cu.usbmodem14401", 921600);     // Mac
 
   // wait for full frame of bytes
   myPort.buffer(bytesPerFrame);  
