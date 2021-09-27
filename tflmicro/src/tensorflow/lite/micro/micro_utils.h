@@ -16,6 +16,7 @@ limitations under the License.
 #ifndef TENSORFLOW_LITE_MICRO_MICRO_UTILS_H_
 #define TENSORFLOW_LITE_MICRO_MICRO_UTILS_H_
 
+#include <limits>
 #include <algorithm>
 #include <cmath>
 #include <cstdint>
